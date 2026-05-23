@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="static/icon.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Série do dia</title>
+</head>
+<body class="bg-light text-dark d-flex flex-column min-vh-100">
+
+    <nav class="navbar bg-danger flex-nowrap" data-bs-theme="dark">
+        <div class="container flex-nowrap">
+            <span class="navbar-brand fw-bold d-flex align-items-center gap-2 flex-shrink-0 me-2">
+                <img src="static/icon.png" alt="Logo" width="32" height="32">
+                Série do dia
+            </span>
+            <span class="navbar-text text-end small ps-2 lh-sm">o fim definitivo de (quase) todas as brigas</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow-1 d-flex align-items-center justify-content-center">
+        <div class="col-12 col-sm-10 col-md-7 col-lg-5 col-xl-4 text-center py-5 px-3 px-sm-0">
+
+            <p class="text-secondary fst-italic mb-3">Estão brigando para decidir a série? Vamos escolher a série de vocês hoje:</p>
+
+            <h1 class="display-5 fw-bold mb-4">Série do dia</h1>
+
+            <!-- Filtros -->
+            <fieldset class="card shadow-sm mb-4 text-start">
+                <div class="card-body pb-2">
+                    <legend class="col-form-label fw-semibold text-secondary small text-uppercase mb-2">Filtros</legend>
+                    <div class="row row-cols-1 row-cols-sm-2 g-2">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="apenas-recentes">
+                                <label class="form-check-label" for="apenas-recentes">Apenas séries recentes (últimos 10 anos)</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="excluir-anime">
+                                <label class="form-check-label" for="excluir-anime">Excluir animes</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="excluir-terror">
+                                <label class="form-check-label" for="excluir-terror">Excluir Terror</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="excluir-comedia">
+                                <label class="form-check-label" for="excluir-comedia">Excluir Comédia</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="excluir-nota">
+                                <label class="form-check-label" for="excluir-nota">Excluir nota menor que 7</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="modo-hardcore">
+                                <label class="form-check-label" for="modo-hardcore">Modo hardcore</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <button id="btn-buscar" class="btn btn-danger btn-lg mb-2">Buscar série</button>
+            <p class="fst-italic mb-0"><a href="#" id="link-filme">Procurando um filme?</a></p>
+
+
+        </div>
+    </main>
+
+    <footer class="py-3 bg-danger" data-bs-theme="dark">
+        <div class="container text-center">
+            <span class="navbar-text text-white">Desenvolvido com ♥ por Jorge Marins | <a href="https://buymeacoffee.com/jorgemarins" target="_blank" class="text-white fw-semibold">Que tal me pagar um café? ☕</a></span>
+        </div>
+    </footer>
+
+    <!-- Modal da série -->
+    <div class="modal fade" id="filme-modal" tabindex="-1" aria-labelledby="filme-titulo" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="me-auto">
+                        <h5 class="modal-title fw-bold mb-0" id="filme-titulo"></h5>
+                        <small id="filme-titulo-original" class="text-secondary fst-italic fw-light d-block lh-sm"></small>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body p-0 overflow-y-auto">
+                    <div class="row g-0">
+                        <div class="col-12 col-sm-4 p-3 pe-sm-0" id="filme-poster-col">
+                            <img id="filme-poster" src="" alt="Poster da série" class="img-fluid w-100 rounded">
+                        </div>
+                        <div class="col-12 col-sm-8">
+                            <div class="p-3 p-md-4">
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <span id="filme-ano" class="badge bg-secondary"></span>
+                                    <span id="filme-nota" class="badge bg-warning text-dark"></span>
+                                    <span id="filme-diretor" class="badge bg-info text-dark"></span>
+                                </div>
+                                <p id="filme-sinopse" class="mb-3 lh-base"></p>
+                                <div id="filme-streaming" class="d-none">
+                                    <p class="small text-secondary mb-2">Disponível em...</p>
+                                    <div id="filme-streaming-lista" class="d-flex flex-wrap gap-2"></div>
+                                    <p class="small text-secondary fst-italic mt-2 mb-0">
+                                        Dados de streaming por <a href="#" id="filme-justwatch-link" target="_blank" rel="noopener" class="text-secondary">JustWatch</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between flex-nowrap">
+                    <span class="text-secondary fst-italic small me-auto text-start">Agora parem de brigar e vão ver a série!</span>
+                    <div class="d-flex gap-2 flex-shrink-0">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-danger" id="btn-buscar-outro">Buscar outra</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal limite atingido -->
+    <div class="modal fade" id="limite-modal" tabindex="-1" aria-labelledby="limite-titulo" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="limite-titulo">Já tá bom, né?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    Você já teve cinco opções.<br>Nada te agrada?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal aviso hardcore -->
+    <div class="modal fade" id="hardcore-modal" tabindex="-1" aria-labelledby="hardcore-titulo" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content border-danger">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold" id="hardcore-titulo">⚠️ Modo hardcore</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    Você está habilitando séries internacionais cujos nomes não estão no nosso alfabeto romano. Boa sorte encontrando onde assistir.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Entendi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="src/hardcore.js"></script>
+    <script src="src/streaming.js"></script>
+    <script src="src/main.js"></script>
+</body>
+</html>
